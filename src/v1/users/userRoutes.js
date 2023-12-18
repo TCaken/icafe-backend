@@ -13,8 +13,10 @@ router.post("/", userService.createUser);
 //router.get("/profile/:userId", userService.get)
 //router.post("/topup/:userId", userService.topup)
 
-router.get("/:userId", userService.getUser);
+router.post("/balance/:userId", userService.addUserBalance)
 
+router.get("/:userId", userService.getUser)
+router.put("/:userId", userService.editUser)
 router.delete("/:userId", userService.deleteUser)
 
 

@@ -1,6 +1,6 @@
 const dbConfig = {
     host: '127.0.0.1',
-    user: 'caken',
+    user: 'root',
     password: '120788',
     database: 'test',
     multipleStatements: true
