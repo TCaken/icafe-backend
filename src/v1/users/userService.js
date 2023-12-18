@@ -1,12 +1,30 @@
 const getAllUsers = (req, res) => {
     const db = req.app.get('db')
-    db.query('SELECT u1.id, u1.name, u1.username, a1.value, u1.email FROM users u1, amount a1 WHERE u1.id = a1.user_id AND u1.activated;', (err, results) => {
-        if (err) {
-          console.error('Error fetching user details:', err);
-          return res.status(500).json({ message: 'Error fetching user details' });
-        }
-        res.json(results);
-    })
+    const { sortBy, sortOrder } = req.query
+    const sortByValue = sortBy || "id"
+    const sortOrderValue = sortOrder || "asc"
+
+    // Validate sortBy and sortOrder to prevent SQL injection
+    const allowedColumns = ['id', 'name', 'username', 'email', 'amount']; // Add more columns as needed
+    const validSortOrder = ['asc', 'desc'];
+
+    if (!allowedColumns.includes(sortByValue) || !validSortOrder.includes(sortOrderValue)) {
+      return res.status(400).json({ error: 'Invalid sortBy or sortOrder parameter.' });
+    }
+  
+    // Construct the ORDER BY clause
+    const orderByClause = (sortByValue == 'amount') ? `a1.${sortByValue} ${sortOrderValue}` : `u1.${sortByValue} ${sortOrderValue}`;
+    const sql = `SELECT u1.id, u1.name, u1.username, u1.email, a1.value FROM users u1, amount a1 WHERE u1.id = a1.user_id ORDER BY ${orderByClause}`;
+    //console.log(sql)
+  
+    db.query(sql, (error, results) => {
+      if (error) {
+        console.error('Error fetching data:', error);
+        return res.status(500).send('Internal Server Error');
+      }
+  
+      res.json(results);
+    });
 }
 
 const createUser = (req, res) => {
