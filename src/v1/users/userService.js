@@ -13,7 +13,7 @@ const getAllUsers = (req, res) => {
     }
   
     // Construct the ORDER BY clause
-    const orderByClause = (sortByValue == 'amount') ? `a1.${sortByValue} ${sortOrderValue}` : `u1.${sortByValue} ${sortOrderValue}`;
+    const orderByClause = (sortByValue == 'amount') ? `a1.value ${sortOrderValue}` : `u1.${sortByValue} ${sortOrderValue}`;
     const sql = `SELECT u1.id, u1.name, u1.username, u1.email, a1.value FROM users u1, amount a1 WHERE u1.id = a1.user_id ORDER BY ${orderByClause}`;
     //console.log(sql)
   
